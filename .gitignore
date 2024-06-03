@@ -1,2 +1,4 @@
 rsconnect/
 backups-local-versions/
+.Rproj.user
+*.Rproj
