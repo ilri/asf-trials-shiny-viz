@@ -14,10 +14,10 @@ library(forcats) # for as_factor
 library(plotly) # for interactive graphics
 library(scales) # for nicer scales
 library(magrittr) # for %<>% only
-library(reactlog)
+
 
 # tell shiny to log all reactivity
-reactlog_enable()
+# reactlog_enable()
 
 ## HARDCODED PARAMS ##
 ona_API_server_prefix <- "https://ona.ilri.org/api/v1"
@@ -210,7 +210,10 @@ server <- function(input, output, session) {
     }
     
     # the filter on `downloadable` is supposed to discard the hidden (test) forms
-    json_result %>% filter(downloadable == TRUE) %>% select(title, formid) -> form_ids # a tibble
+    # and the filter on the name starting with "IACUC" discards the PM forms and other forms under development.
+    json_result %>% filter(downloadable == TRUE &
+                             stringr::str_detect(title, "IACUC")) %>%
+      select(title, formid) -> form_ids # a tibble
     
     # title contains the iacuc number, formid is the form id
     # and we gather all the data (but, beware: possibly, not all forms have the same variables, so we'll have to rbind() loosely?)
